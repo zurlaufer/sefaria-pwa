@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    <title>Sefaria Smart Reader &amp; Bookmark</title>
+    <meta
+      name="description"
+      content="An offline-capable smart reader, book manager and daily progress tracker for learning Jewish texts with Sefaria commentaries."
+    />
+
+    <link rel="icon" href="./favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="./safari-pinned-tab.svg" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+
+    <meta name="theme-color" content="#faf7f2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0f14" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+
+    <!-- iOS standalone / home-screen support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Sefaria Reader" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.sefaria.org" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;600;700&family=Noto+Serif+Hebrew:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;600;700&family=Noto+Serif+Hebrew:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      />
+    </noscript>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <div style="padding: 2rem; font-family: system-ui, sans-serif">
+        <h1>Sefaria Smart Reader</h1>
+        <p>This application requires JavaScript to run.</p>
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

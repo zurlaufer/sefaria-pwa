@@ -1,0 +1,202 @@
+@import 'tailwindcss';
+@config '../tailwind.config.js';
+
+@plugin '@tailwindcss/typography';
+
+/* Tailwind v4 defaults to `prefers-color-scheme`; we drive dark mode from a
+   `.dark` class on <html> so the user can override the OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-hebrew: 'Frank Ruhl Libre', 'Noto Serif Hebrew', serif;
+  --font-ui: 'Spectral', ui-serif, Georgia, serif;
+}
+
+@layer base {
+  :root {
+    --app-fg: var(--color-ink-800);
+    --app-bg: var(--color-parchment-100);
+    --app-surface: #ffffff;
+    --app-border: var(--color-ink-200);
+    color-scheme: light;
+  }
+
+  .dark {
+    --app-fg: var(--color-ink-100);
+    --app-bg: var(--color-ink-900);
+    --app-surface: var(--color-ink-800);
+    --app-border: var(--color-ink-700);
+    color-scheme: dark;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    @apply bg-[var(--app-bg)];
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply text-[var(--app-fg)] font-ui antialiased;
+    @apply bg-[var(--app-bg)];
+    margin: 0;
+    min-height: 100dvh;
+    overscroll-behavior-y: none;
+  }
+
+  /* Respect the iOS home-screen status bar in standalone mode. */
+  @supports (-webkit-touch-callout: none) {
+    .app-shell {
+      padding-top: env(safe-area-inset-top);
+    }
+    .app-footer {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-500;
+  }
+
+  ::selection {
+    @apply bg-brand-200 text-brand-950;
+  }
+}
+
+@layer components {
+  /* ---------- Reader typography -------------------------------------------- */
+
+  .hebrew-text {
+    font-family: var(--font-hebrew);
+    direction: rtl;
+    text-align: right;
+    line-height: var(--hebrew-leading, 2);
+    letter-spacing: 0;
+    word-break: break-word;
+    hyphens: none;
+  }
+
+  .hebrew-text--alt {
+    font-family: 'Noto Serif Hebrew', serif;
+  }
+
+  /* Sefaria returns small HTML: <i> for words needing vocalisation,
+     <big>/<small> for structure, <sup>/<sub> for notes. */
+  .hebrew-text i,
+  .hebrew-text em {
+    font-style: normal;
+    color: color-mix(in oklab, currentColor 82%, var(--color-brand-600));
+  }
+
+  .hebrew-text big {
+    font-size: 1.12em;
+    font-weight: 500;
+  }
+
+  .hebrew-text small {
+    font-size: 0.78em;
+    color: var(--color-ink-400);
+    font-family: var(--font-ui);
+  }
+
+  .hebrew-text sup,
+  .hebrew-text sub {
+    font-size: 0.62em;
+    color: var(--color-brand-600);
+  }
+
+  /* ---------- Reading-size control ---------------------------------------- */
+
+  .reader-size-1 { --reader-size: 1rem; }
+  .reader-size-2 { --reader-size: 1.125rem; }
+  .reader-size-3 { --reader-size: 1.3rem; }
+  .reader-size-4 { --reader-size: 1.5rem; }
+  .reader-size-5 { --reader-size: 1.8rem; }
+
+  /* ---------- Surfaces ------------------------------------------------------ */
+
+  .surface {
+    background-color: var(--app-surface);
+    border-color: var(--app-border);
+  }
+
+  .card-shadow {
+    box-shadow: var(--shadow-card);
+  }
+
+  /* ---------- Skeletons ----------------------------------------------------- */
+
+  .skeleton {
+    @apply relative overflow-hidden rounded bg-ink-200/70 dark:bg-ink-700/70;
+  }
+
+  .skeleton::after {
+    @apply absolute inset-0 animate-shimmer;
+    content: '';
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, white 45%, transparent),
+      transparent
+    );
+  }
+
+  .dark .skeleton::after {
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, white 12%, transparent),
+      transparent
+    );
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-ink-300) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-ink-300/80 dark:bg-ink-600/80;
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* iOS: keep the reader from rubber-banding horizontally while swiping
+     between segments. */
+  .no-overscroll-x {
+    overscroll-behavior-x: contain;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

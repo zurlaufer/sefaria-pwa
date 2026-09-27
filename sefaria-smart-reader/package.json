@@ -1,0 +1,45 @@
+{
+  "name": "sefaria-smart-reader",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "An offline-capable PWA smart reader, book manager and progress tracker for learning Jewish texts via the Sefaria API.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"*.{ts,js,json,md}\""
+  },
+  "dependencies": {
+    "lucide-react": "^0.544.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/node": "^22.18.6",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.3",
+    "eslint": "^9.36.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.0",
+    "vite": "^7.1.7",
+    "vite-plugin-pwa": "^1.0.3",
+    "workbox-window": "^7.3.0"
+  }
+}
