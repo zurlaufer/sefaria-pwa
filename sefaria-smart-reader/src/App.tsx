@@ -183,6 +183,7 @@ export default function App() {
         onToggleTheme={toggleTheme}
         offline={sefaria.offline}
         bookCount={progress.books.length}
+        lang={progress.settings.interfaceLanguage}
       />
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-3 py-4 sm:px-4">

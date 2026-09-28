@@ -10,6 +10,7 @@ export const DEFAULT_SETTINGS: Settings = {
   showVowels: true,
   showPunctuation: true,
   hebrewFont: 'rhl',
+  interfaceLanguage: 'en',
 }
 
 export function emptyState(): PersistedState {
@@ -92,6 +93,7 @@ function sanitiseSettings(value: unknown): Settings {
     showVowels: value.showVowels !== false,
     showPunctuation: value.showPunctuation !== false,
     hebrewFont: value.hebrewFont === 'naskh' ? 'naskh' : 'rhl',
+    interfaceLanguage: value.interfaceLanguage === 'he' ? 'he' : 'en',
   }
 }
 

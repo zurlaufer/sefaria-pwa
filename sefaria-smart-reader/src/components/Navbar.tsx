@@ -2,7 +2,9 @@ import type { ReactNode } from 'react'
 import { BookOpen, Library, Moon, Settings as SettingsIcon, Sun, WifiOff } from 'lucide-react'
 import { Badge, Button } from './ui'
 import { cn } from '@/utils/format'
+import { t } from '@/utils/i18n'
 import type { AppView } from '@/hooks/useRouter'
+import type { Lang } from '@/utils/i18n'
 
 export interface NavbarProps {
   view: AppView
@@ -13,6 +15,7 @@ export interface NavbarProps {
   /** True when the device reports no connectivity. */
   offline: boolean
   bookCount: number
+  lang?: Lang
 }
 
 export function Navbar({
@@ -22,6 +25,7 @@ export function Navbar({
   onToggleTheme,
   offline,
   bookCount,
+  lang = 'en',
 }: NavbarProps) {
   const isDark =
     typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
@@ -43,7 +47,7 @@ export function Navbar({
               Sefaria Reader
             </span>
             <span className="block truncate text-[11px] leading-tight text-ink-500 dark:text-ink-400">
-              {bookCount === 0 ? 'No books yet' : `${bookCount} active ${bookCount === 1 ? 'book' : 'books'}`}
+              {bookCount === 0 ? t('noBooksYet', lang) : `${bookCount} active ${bookCount === 1 ? t('book', lang) : t('books', lang)}`}
             </span>
           </span>
         </button>
@@ -53,7 +57,7 @@ export function Navbar({
         {offline ? (
           <Badge tone="gold" className="mr-1">
             <WifiOff className="h-3 w-3" aria-hidden="true" />
-            Offline
+            {t('offlineMode', lang)}
           </Badge>
         ) : null}
 
@@ -78,14 +82,14 @@ export function Navbar({
           <NavButton
             active={view === 'library'}
             onClick={() => onNavigate('library')}
-            label="Library"
+            label={t('library', lang)}
           >
             <Library className="h-4.5 w-4.5" aria-hidden="true" />
           </NavButton>
           <NavButton
             active={view === 'settings'}
             onClick={() => onNavigate('settings')}
-            label="Settings"
+            label={t('settings', lang)}
           >
             <SettingsIcon className="h-4.5 w-4.5" aria-hidden="true" />
           </NavButton>

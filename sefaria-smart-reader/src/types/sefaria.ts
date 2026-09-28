@@ -269,6 +269,8 @@ export type Settings = {
   showPunctuation: boolean
   /** Hebrew typeface. */
   hebrewFont: 'rhl' | 'naskh'
+  /** Interface language. */
+  interfaceLanguage: 'en' | 'he'
 }
 
 export type PersistedState = {

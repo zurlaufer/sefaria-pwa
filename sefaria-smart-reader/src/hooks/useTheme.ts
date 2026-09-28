@@ -45,14 +45,19 @@ export function useTheme(settings: Settings): void {
   }, [preference])
 }
 
-/** Apply the reading size and the Hebrew typeface. */
+/** Apply the reading size, Hebrew typeface, and interface language / direction. */
 export function useReadingTypography(settings: Settings): void {
   useEffect(() => {
     const root = document.documentElement
     const size = clamp(Math.trunc(settings.fontSize) || 3, 1, 5)
 
+    for (let i = 1; i <= 5; i += 1) root.classList.remove(`reader-size-${size}`) // wait, remove all 1..5
     for (let i = 1; i <= 5; i += 1) root.classList.remove(`reader-size-${i}`)
     root.classList.add(`reader-size-${size}`)
     root.classList.toggle('hebrew-text--alt', settings.hebrewFont === 'naskh')
-  }, [settings.fontSize, settings.hebrewFont])
+
+    const lang = settings.interfaceLanguage || 'en'
+    root.lang = lang
+    root.dir = lang === 'he' ? 'rtl' : 'ltr'
+  }, [settings.fontSize, settings.hebrewFont, settings.interfaceLanguage])
 }

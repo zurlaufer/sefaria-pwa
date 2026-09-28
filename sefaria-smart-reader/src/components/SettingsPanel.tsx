@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { Badge, Button, Card, Modal } from './ui'
 import { cn, dateKey, plural } from '@/utils/format'
+import { t } from '@/utils/i18n'
 import type { Settings } from '@/types/sefaria'
 import type { ImportResult } from '@/hooks/useProgress'
 
@@ -70,6 +71,7 @@ export function SettingsPanel({
   const fileInput = useRef<HTMLInputElement>(null)
 
   const fontSize = Math.min(5, Math.max(1, Math.trunc(settings.fontSize) || 3))
+  const lang = settings.interfaceLanguage || 'en'
 
   /* ----------------------------- export ----------------------------- */
 
@@ -123,15 +125,39 @@ export function SettingsPanel({
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-lg font-semibold">Settings</h1>
+        <h1 className="text-lg font-semibold">{t('settings', lang)}</h1>
         <p className="mt-0.5 text-xs text-ink-500 dark:text-ink-400">
           Reading preferences are saved on this device and apply everywhere.
         </p>
       </div>
 
       {/* ------------------------- Appearance ------------------------- */}
-      <Section title="Appearance" icon={<Type className="h-4 w-4" aria-hidden="true" />}>
-        <Row label="Theme" hint="Follows your system setting until you override it.">
+      <Section title={t('appearance', lang)} icon={<Type className="h-4 w-4" aria-hidden="true" />}>
+        <Row label={t('interfaceLanguage', lang)}>
+          <div className="flex gap-1.5">
+            {[
+              { value: 'en', label: 'English' },
+              { value: 'he', label: 'עברית' },
+            ].map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => onChange({ interfaceLanguage: item.value as 'en' | 'he' })}
+                aria-pressed={lang === item.value}
+                className={cn(
+                  'rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors',
+                  lang === item.value
+                    ? 'border-brand-500 bg-brand-100 text-brand-800 dark:bg-brand-950 dark:text-brand-300'
+                    : 'border-ink-200 text-ink-600 hover:bg-ink-100 dark:border-ink-700 dark:text-ink-300 dark:hover:bg-ink-800',
+                )}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </Row>
+
+        <Row label={t('theme', lang)} hint="Follows your system setting until you override it.">
           <div className="flex gap-1 rounded-xl bg-ink-100 p-1 dark:bg-ink-800">
             {THEMES.map(({ value, label, icon: Icon }) => (
               <button
