@@ -155,8 +155,8 @@ async function requestJson<T>(url: string, options: FetchOptions = {}): Promise<
       if (options.signal?.aborted) throw error
       throw new SefariaError('The request timed out. Check your connection.', 0, 'network')
     }
-    if (error instanceof TypeError) {
-      throw new SefariaError('Could not reach Sefaria. You appear to be offline.', 0, 'network', true)
+    if (error instanceof TypeError || (error instanceof Error && error.message.includes('socket connection was closed'))) {
+      throw new SefariaError('Could not reach Sefaria. Connection closed unexpectedly or you are offline.', 0, 'network', true)
     }
     throw new SefariaError('Something went wrong loading this text.', 0, 'unknown')
   } finally {

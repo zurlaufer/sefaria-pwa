@@ -179,3 +179,15 @@ export function unitsCompletedToday(
 export function bookIdFor(ref: string): string {
   return ref.replace(/\s+/g, '_')
 }
+
+/** Clear browser Cache Storage (Workbox caches) for offline texts/catalogue. */
+export async function clearAppCache(): Promise<boolean> {
+  if (typeof caches === 'undefined') return false
+  try {
+    const keys = await caches.keys()
+    await Promise.all(keys.map((key) => caches.delete(key)))
+    return true
+  } catch {
+    return false
+  }
+}

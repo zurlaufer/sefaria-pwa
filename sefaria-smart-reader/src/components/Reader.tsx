@@ -76,6 +76,25 @@ export function Reader({
     return () => clearTimeout(timer)
   }, [activeIndex, activeRef, state.status, text?.ref])
 
+  /* ------------------------- keyboard navigation ------------------------- */
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!text) return
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement).tagName)) return
+
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        e.preventDefault()
+        onSegmentChange(Math.min(text.segments.length - 1, activeIndex + 1))
+      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault()
+        onSegmentChange(Math.max(0, activeIndex - 1))
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [text, activeIndex, onSegmentChange])
+
   /* ------------------------- gestures: swipe to turn ------------------------- */
 
   const touch = useRef<{ x: number; y: number } | null>(null)

@@ -17,11 +17,12 @@ import {
   Type,
   Upload,
 } from 'lucide-react'
-import { Badge, Button, Card, Modal } from './ui'
+import { Button, Card, Modal } from './ui'
 import { cn, dateKey, plural } from '@/utils/format'
 import { t } from '@/utils/i18n'
 import type { Settings } from '@/types/sefaria'
 import type { ImportResult } from '@/hooks/useProgress'
+import { clearAppCache } from '@/services/storage'
 
 export interface SettingsPanelProps {
   settings: Settings
@@ -72,6 +73,18 @@ export function SettingsPanel({
 
   const fontSize = Math.min(5, Math.max(1, Math.trunc(settings.fontSize) || 3))
   const lang = settings.interfaceLanguage || 'en'
+  const [clearingCache, setClearingCache] = useState(false)
+  const [cacheCleared, setCacheCleared] = useState(false)
+
+  const handleClearCache = useCallback(async () => {
+    setClearingCache(true)
+    const ok = await clearAppCache()
+    setClearingCache(false)
+    if (ok) {
+      setCacheCleared(true)
+      setTimeout(() => setCacheCleared(false), 3000)
+    }
+  }, [])
 
   /* ----------------------------- export ----------------------------- */
 
@@ -287,10 +300,15 @@ export function SettingsPanel({
         </Row>
 
         <Row label="Storage" hint="Chapters you have read are cached for offline use.">
-          <Badge>
-            <HardDrive className="h-3 w-3" aria-hidden="true" />
-            Cached automatically
-          </Badge>
+          <div className="flex items-center gap-2">
+            {cacheCleared ? (
+              <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">Cache cleared!</span>
+            ) : null}
+            <Button variant="secondary" size="sm" disabled={clearingCache} onClick={handleClearCache}>
+              <HardDrive className="h-4 w-4" aria-hidden="true" />
+              {clearingCache ? 'Clearing…' : 'Clear cache'}
+            </Button>
+          </div>
         </Row>
       </Section>
 
