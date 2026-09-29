@@ -15,8 +15,10 @@ import {
 import { Badge, Button, Card, CopyButton, EmptyState, Modal, ProgressBar, ProgressRing } from './ui'
 import { bookDeepLink } from '@/utils/ref'
 import { cn, parseDateKey, plural, relativeDay } from '@/utils/format'
+import { t } from '@/utils/i18n'
 import type { Pace } from '@/types/sefaria'
 import type { BookSummary, UseProgress } from '@/hooks/useProgress'
+import type { Lang } from '@/utils/i18n'
 
 export interface BookManagerProps {
   summaries: BookSummary[]
@@ -26,6 +28,7 @@ export interface BookManagerProps {
   onAddBook: () => void
   onUpdatePace: (bookId: string, pace: Pace) => void
   onRemove: (bookId: string) => void
+  lang?: Lang
 }
 
 /**
@@ -40,6 +43,7 @@ export function BookManager({
   onAddBook,
   onUpdatePace,
   onRemove,
+  lang = 'en',
 }: BookManagerProps) {
   const [editing, setEditing] = useState<BookSummary | null>(null)
   const [shortcutFor, setShortcutFor] = useState<BookSummary | null>(null)
@@ -74,29 +78,29 @@ export function BookManager({
           <div className="min-w-0 flex-1">
             <h1 className="text-base font-semibold">
               {summaries.length === 0
-                ? 'Your library'
+                ? t('library', lang)
                 : totals.allMet
-                  ? 'All goals met — yootz'
+                  ? (lang === 'he' ? 'כל היעדים הושלמו!' : 'All goals met')
                   : totals.met > 0
-                    ? 'Keep going'
-                    : 'Today'}
+                    ? (lang === 'he' ? 'המשך כך' : 'Keep going')
+                    : (lang === 'he' ? 'היום' : 'Today')}
             </h1>
             <p className="mt-0.5 text-xs text-ink-500 dark:text-ink-400">
               {summaries.length === 0
-                ? 'Add your first book to start tracking a daily shiur.'
-                : `${totals.units} ${plural(totals.units, 'unit')} across ${plural(summaries.length, 'book')} today.`}
+                ? t('noBooksYet', lang)
+                : `${totals.units} ${plural(totals.units, t('unit', lang))} ${t('across', lang)} ${plural(summaries.length, t('book', lang))} ${t('today', lang)}.`}
             </p>
             {totals.streak > 0 ? (
               <Badge tone="gold" className="mt-1.5">
                 <Flame className="h-3 w-3" aria-hidden="true" />
-                {totals.streak}-day streak
+                {totals.streak} {t('streak', lang)}
               </Badge>
             ) : null}
           </div>
 
           <Button variant="primary" size="sm" onClick={onAddBook} className="shrink-0">
             <BookPlus className="h-4 w-4" aria-hidden="true" />
-            Add
+            {t('addBook', lang)}
           </Button>
         </div>
 
@@ -130,12 +134,12 @@ export function BookManager({
       {summaries.length === 0 ? (
         <EmptyState
           icon={<BookPlus className="h-10 w-10" aria-hidden="true" />}
-          title="No books yet"
-          description="Add a book from Sefaria, set a daily quota, and this page becomes your daily shiur dashboard."
+          title={t('noBooksYet', lang)}
+          description={lang === 'he' ? 'הוסף ספר מספריא, הגדר מכסה יומית, ועמוד זה יהפוך ללוח השיעורים היומי שלך.' : 'Add a book from Sefaria, set a daily quota, and this page becomes your daily shiur dashboard.'}
           action={
             <Button variant="primary" onClick={onAddBook}>
               <BookPlus className="h-4 w-4" aria-hidden="true" />
-              Add your first book
+              {t('addYourFirstBook', lang)}
             </Button>
           }
         />
@@ -149,6 +153,7 @@ export function BookManager({
                 onEditPace={() => setEditing(summary)}
                 onShortcut={() => setShortcutFor(summary)}
                 onRemove={() => setConfirmRemove(summary)}
+                lang={lang}
               />
             </li>
           ))}
@@ -216,17 +221,22 @@ function BookCard({
   onEditPace,
   onShortcut,
   onRemove,
+  lang = 'en',
 }: {
   summary: BookSummary
   onOpen: () => void
   onEditPace: () => void
   onShortcut: () => void
   onRemove: () => void
+  lang?: Lang
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const { book, doneToday, targetToday, quotaMet, whereLabel, percentBook, streak, lastStudiedAt } =
     summary
   const unit = book.pace.unit === 'chapter' ? 'chapter' : 'unit'
+
+  const mainTitle = lang === 'he' ? (book.heTitle || book.title) : book.title
+  const subTitle = lang === 'he' ? (book.heTitle ? book.title : '') : book.heTitle
 
   return (
     <Card className="relative overflow-hidden">
@@ -248,20 +258,20 @@ function BookCard({
           type="button"
           onClick={onOpen}
           className="min-w-0 flex-1 text-start"
-          aria-label={`Continue ${book.title}`}
+          aria-label={`Continue ${mainTitle}`}
         >
           <div className="flex items-center gap-1.5">
             <h3 className="truncate text-sm font-semibold" dir="auto">
-              {book.title}
+              {mainTitle}
             </h3>
             {streak > 0 ? (
               <Flame className="h-3.5 w-3.5 shrink-0 text-gold-500" aria-hidden="true" />
             ) : null}
           </div>
 
-          {book.heTitle ? (
-            <p className="truncate text-xs text-ink-500 dark:text-ink-400" dir="rtl">
-              {book.heTitle}
+          {subTitle ? (
+            <p className="truncate text-xs text-ink-500 dark:text-ink-400" dir="auto">
+              {subTitle}
             </p>
           ) : null}
 

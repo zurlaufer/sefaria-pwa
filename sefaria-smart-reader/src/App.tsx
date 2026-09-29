@@ -16,6 +16,7 @@ import { useReadingTypography, useTheme } from './hooks/useTheme'
 
 import { resolveRef } from './services/sefariaApi'
 import { canonicalRef, chapterOf, isBookRef, parseRef, stripRange } from './utils/ref'
+import { t } from './utils/i18n'
 import type { AddBookInput } from './hooks/useProgress'
 import type { AccentColor, Pace } from './types/sefaria'
 
@@ -207,6 +208,7 @@ export default function App() {
               onAddBook={() => setAddOpen(true)}
               onUpdatePace={progress.updatePace}
               onRemove={progress.removeBook}
+              lang={progress.settings.interfaceLanguage}
             />
           </div>
         ) : (
@@ -276,7 +278,7 @@ export default function App() {
             onClick={() => setAddOpen(true)}
           >
             <Plus className="h-4.5 w-4.5" aria-hidden="true" />
-            Add book
+            {t('addBook', progress.settings.interfaceLanguage)}
           </Button>
         </div>
       ) : null}
@@ -288,6 +290,7 @@ export default function App() {
         onAdd={addBook}
         onUpdate={updateBook}
         onOpen={openBook}
+        lang={progress.settings.interfaceLanguage}
       />
 
       {/* Global footer note */}

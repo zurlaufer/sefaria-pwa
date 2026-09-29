@@ -4,8 +4,10 @@ import { Badge, Button, Modal, Spinner } from './ui'
 import { SefariaError, fetchCatalogue, resolveRef, type CatalogueEntry } from '@/services/sefariaApi'
 import { ACCENTS, CATEGORY_ORDER, UNIQUE_STARTER_BOOKS, type StarterBook } from '@/data/starterBooks'
 import { cn, plural } from '@/utils/format'
+import { t } from '@/utils/i18n'
 import type { AccentColor, Pace } from '@/types/sefaria'
 import type { AddBookInput } from '@/hooks/useProgress'
+import type { Lang } from '@/utils/i18n'
 
 export interface AddBookModalProps {
   open: boolean
@@ -17,6 +19,7 @@ export interface AddBookModalProps {
   onUpdate: (bookRef: string, pace: Pace, accent: AccentColor) => void
   /** Jump straight into a book once the dialog closes. */
   onOpen: (bookRef: string) => void
+  lang?: Lang
 }
 
 type Mode = 'browse' | 'custom'
@@ -45,6 +48,7 @@ export function AddBookModal({
   onAdd,
   onUpdate,
   onOpen,
+  lang = 'en',
 }: AddBookModalProps) {
   const [mode, setMode] = useState<Mode>('browse')
   const [query, setQuery] = useState('')
@@ -116,7 +120,7 @@ export function AddBookModal({
       const matches = source
         .filter((book) => searchKeyOf(book).includes(needle))
         .slice(0, 60)
-      return [{ title: matches.length === 1 ? '1 result' : `${matches.length} results`, books: matches }]
+      return [{ title: `${matches.length} ${t('results', lang)}`, books: matches }]
     }
 
     if (catalogue) {
@@ -124,19 +128,19 @@ export function AddBookModal({
       const all = catalogue.filter((book) => (book.primary_category ?? '') === category)
       return [
         ...(starters.length
-          ? [{ title: 'Suggested for a daily shiur', books: starters as Candidate[] }]
+          ? [{ title: t('suggestedForDailyShiur', lang), books: starters as Candidate[] }]
           : []),
-        { title: `All of ${category}`, books: all.slice(0, MAX_SECTION), hint: `${all.length} books` },
+        { title: `${t('allOf', lang)} ${t(category, lang)}`, books: all.slice(0, MAX_SECTION), hint: `${all.length} ${t('books', lang)}` },
       ]
     }
 
     return [
       {
-        title: 'Suggested',
+        title: t('suggested', lang),
         books: UNIQUE_STARTER_BOOKS.filter((book) => matchesCategory(book, category)),
       },
     ]
-  }, [mode, query, catalogue, category])
+  }, [mode, query, catalogue, category, lang])
 
   const isSearching = query.trim().length >= SEARCH_THRESHOLD
   const showSpinner = loadingCatalogue && !isSearching
@@ -366,7 +370,7 @@ export function AddBookModal({
                         : 'border-ink-200 text-ink-600 hover:bg-ink-100 dark:border-ink-700 dark:text-ink-300 dark:hover:bg-ink-800',
                     )}
                   >
-                    {name}
+                    {t(name, lang)}
                   </button>
                 ))}
               </div>
@@ -381,7 +385,7 @@ export function AddBookModal({
             {showSpinner ? (
               <div className="flex items-center justify-center gap-2 py-8 text-sm text-ink-500">
                 <Spinner />
-                Loading the Sefaria catalogue…
+                {t('loading', lang)}
               </div>
             ) : sections.every((section) => section.books.length === 0) ? (
               <p className="py-8 text-center text-sm text-ink-500 dark:text-ink-400">
@@ -411,10 +415,10 @@ export function AddBookModal({
                               >
                                 <span className="min-w-0 flex-1">
                                   <span className="block truncate text-sm font-medium" dir="auto">
-                                    {book.title}
+                                    {lang === 'he' ? (book.heTitle || book.title) : book.title}
                                   </span>
                                   <span className="block truncate text-xs text-ink-500 dark:text-ink-400" dir="auto">
-                                    {book.heTitle}
+                                    {lang === 'he' ? (book.heTitle ? book.title : '') : book.heTitle}
                                     {'defaultPace' in book && !added ? ` · ${book.defaultPace}/day` : ''}
                                   </span>
                                 </span>
