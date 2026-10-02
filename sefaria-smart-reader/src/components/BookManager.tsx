@@ -13,7 +13,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { Badge, Button, Card, CopyButton, EmptyState, Modal, ProgressBar, ProgressRing } from './ui'
-import { bookDeepLink } from '@/utils/ref'
+import { bookDeepLink, deepLink } from '@/utils/ref'
 import { cn, parseDateKey, plural, relativeDay } from '@/utils/format'
 import { t } from '@/utils/i18n'
 import type { Pace } from '@/types/sefaria'
@@ -516,7 +516,7 @@ function ShortcutModal({
   onClose: () => void
 }) {
   const [copied, setCopied] = useState(false)
-  const link = useMemo(() => (summary ? bookDeepLink(summary.book.ref) : ''), [summary])
+  const link = useMemo(() => (summary ? deepLink(summary.progress?.ref ?? summary.book.ref) : ''), [summary])
   const isIos = useMemo(
     () =>
       typeof navigator !== 'undefined' &&
